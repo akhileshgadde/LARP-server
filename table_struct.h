@@ -1,4 +1,8 @@
 #include "thread_mutex.h"
+#define LABEL_MAX 1048575 /* 2^20 - 1 */
+#define LABEL_MIN 16 /* lowest unspecial label allowed */
+#define METRIC_MAX 1048575 /* 2^20 - 1 */
+#define METRIC_MIN 1 /* metric starting value */ 
 struct ip_label_table
 {
   uint32_t ipaddr;

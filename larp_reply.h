@@ -93,7 +93,7 @@ int larp_reply_pkt(struct arphdr *ar_hdr, struct sockaddr_ll *recv_addr)
   fill_type_attribute_tlv(&type_len, &a_tlv, ar_hdr->ar_tip);
   /* Copy the ATTR_TLV struct to the sending buffer */
   memcpy(buffer + 14 + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE, &type_len, TYPE_LEN_SIZE);
-  memcpy(buffer + 14 + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE + TYPE_LEN_SIZE, &a_tlv, ATTR_TLV_SIZE);  
+  memcpy(buffer + 14 + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE + TYPE_LEN_SIZE, a_tlv->metric, ATTR_TLV_SIZE);  
 
   
   /* Frame length = Ethernet header + ARP header + type_len + label_stack */
@@ -170,8 +170,9 @@ void fill_type_attribute_tlv(struct tlv_type_len *type_len, struct attr_tlv *a_t
   /*convert the ip address stored in uint8_t[4] to uint32_t */
   u32fromu8(ipaddr, &ipaddr_32);
   //pthread_mutex_lock(&mutex_lock);
-  printf("Metric for ipaddr: %s: %u\n", inet_ntop(AF_INET, &ipaddr_32, ip, sizeof(ip)), find_metric(ipaddr_32));
+  printf("Metric for ipaddr: %s: %06x,metric in nw format: %06x\n", inet_ntop(AF_INET, &ipaddr_32, ip, sizeof(ip)), find_metric(ipaddr_32), htonl(find_metric(ipaddr_32)));
   a_tlv->metric = htonl(find_metric(ipaddr_32)); /* convert metric to nw byte order and store in structure */
+  printf("a_tlv: %06x\n", a_tlv->metric);
   //pthread_mutex_unlock(&mutex_lock);
 }
 

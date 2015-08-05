@@ -102,10 +102,10 @@ struct ip_label_table* create_new_entry(uint32_t ipaddr)
   for (i = 0; i<label_count; i++)
   {
      /* Need to add check if already label exists for another entry in table - coce to be added */
-     new_node->label[i] = 16 + rand() / (RAND_MAX / (1048575 - 16 + 1) + 1);
+     new_node->label[i] = LABEL_MIN + rand() / (RAND_MAX / (LABEL_MAX - LABEL_MIN + 1) + 1);
   }  
-  /* Generate a random metric value between 1 to 255 */
-  new_node->metric = 1 + rand () / (RAND_MAX / (255 - 1 + 1) + 1);
+  /* Generate a random metric value between 1 to (2^20-1) */
+  new_node->metric = METRIC_MIN + rand () / (RAND_MAX / (METRIC_MAX - METRIC_MIN + 1) + 1);
   /* Fill timetsamp in seconds */
   new_node->timestamp = get_ts();
   /* link the newly created node to the table*/
