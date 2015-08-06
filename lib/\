@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <linux/if_packet.h>
+#include <sys/socket.h>
+#include <linux/if_ether.h>
+#include <pthread.h>
+#include <inttypes.h>
+#include "sock_ntop.h"
+
+void * msg_recv(void *sockfd);
+
+
+struct arphdr
+{
+    uint16_t ar_htype;		/* Format of hardware address.  */
+    uint16_t ar_ptype;		/* Format of protocol address.  */
+    uint8_t  ar_hln;		/* Length of hardware address.  */
+    uint8_t  ar_pln;		/* Length of protocol address.  */
+    uint16_t ar_op;		/* ARP opcode (command).  */
+    uint8_t  ar_sha[ETH_ALEN];	/* Sender hardware address.  */
+    uint8_t  ar_sip[4];		/* Sender IP address.  */
+    uint8_t  ar_tha[ETH_ALEN];	/* Target hardware address.  */
+    uint8_t  ar_tip[4];		/* Target IP address.  */
+};
+
+
