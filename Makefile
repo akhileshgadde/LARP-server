@@ -9,7 +9,7 @@ OBJS = htonl3.o label_mapping_table.o larp_reply.o process_pkt.o
 
 all: server
 
-server: server.o $(OBJS)
+server: larp_server.o $(OBJS)
 	${CC} ${FLAGS} -o server larp_server.o $(OBJS) ${LIBS}
 
 larp_server.o: larp_server.c $(OBJS)
