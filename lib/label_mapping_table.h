@@ -26,6 +26,9 @@ static int label_count = 1;
 /* count for number of attributes in ATTR_TLV */
 static int attr_count = 1; 
 
+/* entropy flag */
+#define ENTROPY_DEF 1
+
 void u32fromu8 (uint8_t addr[IP_ADDR_SIZE], uint32_t *ip_u32);
 uint32_t get_ts();
 struct ip_label_table* get_label_entry (uint8_t addr[IP_ADDR_SIZE]);

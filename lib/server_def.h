@@ -36,10 +36,18 @@ struct tlv_type_len
 /* Label stack structure */
 struct label_stack
 {
+  #if defined(__BIG_ENDIAN_BITFIELD)
   uint8_t label_beg, label_mid;
   uint8_t label_end:4; /* last 4 bits of 20 byte label */
   uint8_t entropy:1; /* 1 bit entropy flag */
   uint8_t dummy:3; /* 3 dummy bits - unused currently */
+  
+  #elif defined(__LITTLE_ENDIAN_BITFIELD)
+  uint8_t label_beg, label_mid;
+  uint8_t dummy:3; /* 3 dummy bits - unused currently */
+  uint8_t entropy:1; /* 1 bit entropy flag */
+  uint8_t label_end:4; /* last 4 bits of 20 byte label */
+  #endif
 };
 
 /* Attributes TLV structure */
