@@ -2,6 +2,7 @@
 
 void htonl3(uint32_t label, struct label_stack *l_stack)
 {
+  printf("label before bit shifting: %u\n", label);
   label = (label << 12);
   /* bits numbered from low-order bytes */
   l_stack->label_beg = (label >> 24) & 0xff; /* bits 16-23 */

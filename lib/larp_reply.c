@@ -74,7 +74,7 @@ int larp_reply_pkt(struct arphdr *ar_hdr, struct sockaddr_ll *recv_addr)
   
   /* copy the tlv TLV_LST struct to sending buffer */
   memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE, &type_len, TYPE_LEN_SIZE);
-  memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE, l_stack,label_count * LABEL_STACK_SIZE);
+  memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE, l_stack, label_count * LABEL_STACK_SIZE);
   
   /* zero the type_len struct so that now the new values can be held for attr_tlv*/
   memset (&type_len, 0, TYPE_LEN_SIZE);
@@ -142,11 +142,13 @@ uint8_t * allocate_ustrmem (int len)
 void fill_type_label_stack(struct tlv_type_len *type_len, struct label_stack *l_stack, uint8_t ipaddr[IP_ADDR_SIZE])
 {
   struct ip_label_table *l_entry;
+  int i;
   type_len->type = TLV_LST_TYPE; /* 1 for TLV_LST */
   type_len->len = label_count * LABEL_STACK_SIZE; /* Length(in bytes) = (number of labels * 3) */
   l_entry = get_label_entry(ipaddr);
   /* label present in l_entry struct to be put in label_stack struct, htonl3 converts it to network byte order */
-  htonl3(l_entry->label[0], l_stack);
+  for (i=0; i < label_count; i++)
+	htonl3(l_entry->label[i], &l_stack[i]);
 }
 
 /* Fill the values for attribute type TLV */
@@ -160,7 +162,7 @@ void fill_type_attribute_tlv(struct tlv_type_len *type_len, struct attr_tlv *a_t
   u32fromu8(ipaddr, &ipaddr_32);
   //pthread_mutex_lock(&mutex_lock);
   #if PRINT
-  printf("Metric for ipaddr: %s: %06x,metric in nw format: %06x\n", inet_ntop(AF_INET, &ipaddr_32, ip, sizeof(ip)), find_metric(ipaddr_32), htonl(find_metric(ipaddr_32)));
+  printf("Metric for ipaddr: %s: Decimal: %u, Hex:%06x,metric in nw format: %06x\n", inet_ntop(AF_INET, &ipaddr_32, ip, sizeof(ip)), find_metric(ipaddr_32), find_metric(ipaddr_32), htonl(find_metric(ipaddr_32)));
   #endif
   a_tlv->metric = htonl(find_metric(ipaddr_32)); /* convert metric to nw byte order and store in structure */
   #if PRINT

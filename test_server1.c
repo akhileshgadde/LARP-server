@@ -1,32 +1,7 @@
 /* You need to run the program as root user for the raw sockets to be created */
 /* gcc-g -pthread test_server1.c -o server */
 
-#include "server_def.h"
-#include "process_pkt.h"
-#include "larp_reply.h"
-
-#if 0
-struct ip_label_table
-{
-  uint32_t ipaddr;
-  uint32_t label[11];
-  int label_count;
-  uint32_t timestamp;
-  struct ip_label_table *next;
-};
-#endif
-
-void print_struct()
-{  
-   struct label_stack l_stack;
-   struct attr_tlv att_tlv;
-   //printf("Sizeof type: %ld\n", sizeof(a_lst_tlv.type));
-   //printf("Sizeof len: %ld\n", sizeof(a_lst_tlv.len));
-   //printf("Sizeof label: %ld\n", sizeof(a_lst_tlv.label));
-   //printf("Sizeof entropy: %ld\n", sizeof(a_lst_tlv.entropy));
-   printf("Sizeof attr tlv: %ld\n", sizeof(att_tlv));
-   printf("Sizeof label stack struct:%ld\n", sizeof(l_stack));
-}
+#include "lib/server_def.h"
 
 int main (int argc, char *argv[])
 {
@@ -124,18 +99,22 @@ void *msg_recv(void *sockfd)
     socklen_t from_len = sizeof(send_addr);
     bzero(&send_addr, sizeof(send_addr)); 
     pkt_len = recvfrom(recv_sockfd, recvbuf, ETH_FRAME_LEN, 0, (SA *) &send_addr, &from_len);
-    if (pkt_len < 0) {
-	perror("Recvfrom Error\n");
+    if (pkt_len < 0) { /* Empty packet */
+	perror("Recvfrom Error:Empty packet\n");
         pthread_exit(NULL);
     }
+    if (pkt_len != ARP_REQ_SIZE) { /* Checking ARP request size */
+	perror("Recceived ARP request size is invalid. Ignoring..\n");
+	pthread_exit(NULL);
+    } 
     printf("Received %zd bytes\n", pkt_len);
     printf("Received from interface index: %d\n", send_addr.sll_ifindex);
     process_larp_req(recvbuf, &send_addr);
-    ar_hdr = (struct arphdr *) recvbuf;
     #if 0
+    ar_hdr = (struct arphdr *) recvbuf;
     printf("SRC ip address: %u.%u.%u.%u\n", ar_hdr->ar_sip[0], ar_hdr->ar_sip[1], ar_hdr->ar_sip[2], ar_hdr->ar_sip[3]);
-    #endif
     printf("ARP code: %u\n", ntohs(ar_hdr->ar_op));
+    #endif
     free(recvbuf);
     pthread_exit(NULL);
 }

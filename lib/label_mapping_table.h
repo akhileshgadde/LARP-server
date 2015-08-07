@@ -10,7 +10,7 @@
 struct ip_label_table
 {
   uint32_t ipaddr;
-  uint32_t label[11];
+  uint32_t *label; /* memory would be allocated based on number of labels */
   int label_count;
   uint32_t timestamp;
   uint32_t metric;
@@ -34,3 +34,6 @@ struct ip_label_table* find_last_node ();
 void print_ip_label_table();
 void sigintHandler(int sig_num);
 void free_alloc_mem();
+int find_dup_label(uint32_t l_label);
+void gen_label_metric(struct ip_label_table *new_node);
+int delete_label_entry(uint32_t ipaddr);
