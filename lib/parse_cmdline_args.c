@@ -32,9 +32,10 @@ int parse_cmdline (int argc, char *argv[])
 		  label_count = atoi(optarg);
 		  break;
 	case 'a': attr_tlv_flag = 1; /*enable ATTR_TLV */
-		  if(optarg) { /*metric is optional, else a randomly generated metric value is used */
-			attr_metric = atoi(optarg);
-		  }
+		  //if(optarg) { /*metric is optional, else a randomly generated metric value is used */
+			//attr_metric = strtoul(optarg, 0, 10);
+			//printf("ATTR_METRIC: %u\n", attr_metric);
+		  //}
 		  break;
 	case 'e': entropy_flag = atoi(optarg);
 		  break;

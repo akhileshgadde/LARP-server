@@ -1,4 +1,4 @@
-/* You need to run the program as root user for the raw sockets to be created */
+/* You need to run the program as **root** user for the raw sockets to be created */
 /* gcc-g -pthread test_server1.c -o server */
 
 #include "lib/server_def.h"
@@ -7,6 +7,7 @@ int main (int argc, char *argv[])
 {
    int i;
    int sockfd; //listening socket
+   int parse_ret;
    fd_set rset; //for select
    int maxfdp; // for select
    pthread_t msg_thread_id;
@@ -21,10 +22,14 @@ int main (int argc, char *argv[])
     }
   #endif
    #if 0
-   if(table_head == NULL)
+     	if(table_head == NULL)
    	printf("Table_head is NULL\n");
    #endif 
    /* Checking correct arguments given in command line */
+   parse_ret = parse_cmdline(argc,argv);
+   if(parse_ret == 1)
+	printf("********No options provided. Using default values.**********\n"); 
+   #if 0
    if(argc == 2){
       printf("Argc:%d, argv: %s\n", argc, argv[1]);
       if (strcmp (argv[1], "-d") != 0) {
@@ -39,7 +44,8 @@ int main (int argc, char *argv[])
      printf("Correct usage:./server or ./server -d\n");
      exit(1);
    }
-   //print_struct();
+   #endif
+   
    /* Opening raw socket */
    sockfd = socket(AF_PACKET, SOCK_DGRAM, htons(ETH_P_ARP));
    if (sockfd < 0) { /* socket function returns negative value on error */
@@ -119,4 +125,3 @@ void *msg_recv(void *sockfd)
     pthread_exit(NULL);
 }
 
-    

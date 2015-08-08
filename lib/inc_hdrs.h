@@ -18,6 +18,7 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <errno.h>
+#include <getopt.h> /* for getopt_long() */
 #include <asm/byteorder.h> /* Defines either __BIG_ENDIAN or __LITTLE_ENDIAN macros, depending on the processor's byte ordering */
 
 /* Structures sizes */

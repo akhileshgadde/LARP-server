@@ -76,22 +76,25 @@ int larp_reply_pkt(struct arphdr *ar_hdr, struct sockaddr_ll *recv_addr)
   memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE, &type_len, TYPE_LEN_SIZE);
   memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE, l_stack, label_count * LABEL_STACK_SIZE);
   
-  /* zero the type_len struct so that now the new values can be held for attr_tlv*/
-  memset (&type_len, 0, TYPE_LEN_SIZE);
-  /* Fill in struct values for attributes TLV */
-  fill_type_attribute_tlv(&type_len, &a_tlv, ar_hdr->ar_tip);
-  /* Copy the ATTR_TLV struct to the sending buffer */
-  memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE, &type_len, TYPE_LEN_SIZE);
-  memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE + TYPE_LEN_SIZE, &a_tlv, ATTR_TLV_SIZE);  
-
+  /*Add Attribute TLV to sending buffer only if it is enabled */
+  if(attr_tlv_flag) {
+        /* zero the type_len struct so that now the new values can be held for attr_tlv*/
+        memset (&type_len, 0, TYPE_LEN_SIZE);
+  
+  	/* Fill in struct values for attributes TLV */
+        fill_type_attribute_tlv(&type_len, &a_tlv, ar_hdr->ar_tip);
+        /* Copy the ATTR_TLV struct to the sending buffer */
+        memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE, &type_len, TYPE_LEN_SIZE);
+        memcpy(buffer + ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE + TYPE_LEN_SIZE, &a_tlv, ATTR_TLV_SIZE);  
+  }
   
   /* Frame length = Ethernet header + ARP header + type_len + label_stack */
-  frame_length = ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE + TYPE_LEN_SIZE + attr_count * ATTR_TLV_SIZE;
+  frame_length = ETH_HDR_SIZE + ARP_HDR_SIZE + TYPE_LEN_SIZE + label_count * LABEL_STACK_SIZE + attr_tlv_flag * (TYPE_LEN_SIZE + ATTR_TLV_SIZE);
  
   /* sending the filled packet buffer using sendto*/
   send_bytes = sendto(send_sockfd, buffer, frame_length, 0, (SA *) &send_addr, sizeof(send_addr));
   if(send_bytes <= 0) { /* Return value: 0 is no bytes sent and negative is error */
-	perror("Sendto() failed\n");
+	perror("Sendto() for LARP reply failed\n");
 	exit (1);
   }
   #ifdef DEBUG
@@ -161,13 +164,13 @@ void fill_type_attribute_tlv(struct tlv_type_len *type_len, struct attr_tlv *a_t
   /*convert the ip address stored in uint8_t[4] to uint32_t */
   u32fromu8(ipaddr, &ipaddr_32);
   //pthread_mutex_lock(&mutex_lock);
-  #if PRINT
+  if (print_msgs) {
   printf("Metric for ipaddr: %s: Decimal: %u, Hex:%06x,metric in nw format: %06x\n", inet_ntop(AF_INET, &ipaddr_32, ip, sizeof(ip)), find_metric(ipaddr_32), find_metric(ipaddr_32), htonl(find_metric(ipaddr_32)));
-  #endif
+  }
+ // if(attr_metric == 0) /* No Metric given by user */
   a_tlv->metric = htonl(find_metric(ipaddr_32)); /* convert metric to nw byte order and store in structure */
-  #if PRINT
-  printf("a_tlv: %06x\n", a_tlv->metric);
-  #endif
+ // else
+ //	a_tlv->metric = htonl(attr_metric);
   //pthread_mutex_unlock(&mutex_lock);
 }
 

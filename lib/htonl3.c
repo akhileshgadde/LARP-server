@@ -8,16 +8,14 @@ void htonl3(uint32_t label, struct label_stack *l_stack)
   l_stack->label_beg = (label >> 24) & 0xff; /* bits 16-23 */
   l_stack->label_mid = (label >> 16)  & 0xff; /* bits 8-15 */
   l_stack->label_end = (label >> 12) & 0x0f; /* bits 0-3 */
-  #if ENTROPY_DEF
-  l_stack->entropy   = 1;  
-  #else
-  l_stack->entropy   = 0;
-  #endif
+  if (entropy_flag)
+  	l_stack->entropy   = 1;  
+  else
+  	l_stack->entropy   = 0;
   
   l_stack->dummy     = 0; /* 6,7,8th bits not considered. Taken as dummy */
-  #ifdef DEBUG
-  print_label_bytes(label, l_stack);
-  #endif 
+  if(print_debugs)
+	  print_label_bytes(label, l_stack); 
 }
 
 void print_label_bytes(uint32_t label, struct label_stack *l_stack)

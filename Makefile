@@ -5,7 +5,7 @@ LIBS = -lpthread\
 FLAGS = -g -O2
 CFLAGS = ${FLAGS} -I -Wall
 
-OBJS = htonl3.o label_mapping_table.o larp_reply.o process_pkt.o 
+OBJS = htonl3.o label_mapping_table.o larp_reply.o process_pkt.o parse_cmdline_args.o
 
 all: server
 
@@ -26,6 +26,9 @@ larp_reply.o: lib/larp_reply.c lib/larp_reply.h
 
 process_pkt.o: lib/process_pkt.c lib/process_pkt.h
 	${CC} ${CFLAGS} -c lib/process_pkt.c
+
+parse_cmdline_args.o: lib/parse_cmdline_args.c lib/parse_cmdline_args.h
+	${CC} ${CFLAGS} -c lib/parse_cmdline_args.c
 
 clean: 
 	rm server larp_server.o $(OBJS)

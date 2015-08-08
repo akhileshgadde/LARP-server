@@ -4,7 +4,7 @@ extern int label_count;
 
 static struct option long_options[] = {
 	{"label_count", required_argument, NULL, 'l'},
-	{"attribute_tlv_en", optional_argument, NULL, 'a'},
+	{"attribute_tlv_en", required_argument, NULL, 'a'},
 	{"entropy_flag_en", required_argument, NULL, 'e'},
 	{"no_check", no_argument, NULL, 'n'}, 
 	{"print_msgs", no_argument, NULL, 'p'},

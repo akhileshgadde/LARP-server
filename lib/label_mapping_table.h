@@ -1,5 +1,6 @@
 #include "inc_hdrs.h"
 #include "debug.h"
+#include "struct_hdrs.h"
 
 #define LABEL_MAX 1048575 /* 2^20 - 1 */
 #define LABEL_MIN 16 /* lowest unspecial label allowed */
@@ -20,14 +21,6 @@ struct ip_label_table
 /* Head for the ip-mpls label table*/
 struct ip_label_table *table_head;
 
-/*count for number of labels - given in command line by user */
-static int label_count = 1;
-
-/* count for number of attributes in ATTR_TLV */
-static int attr_count = 1; 
-
-/* entropy flag */
-#define ENTROPY_DEF 1
 
 void u32fromu8 (uint8_t addr[IP_ADDR_SIZE], uint32_t *ip_u32);
 uint32_t get_ts();

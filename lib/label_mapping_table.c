@@ -53,17 +53,17 @@ struct ip_label_table* get_label_entry (uint8_t addr[IP_ADDR_SIZE])
   signal(SIGINT, sigintHandler);
   /*convert the ip address stored in uint8_t[4] to uint32_t */
   u32fromu8 (addr, &ipaddr); //ip address stored in ipaddr variable(32 bit)
-  #if PRINT
-  printf("Searching entry for IP addr: %s\n",inet_ntop(AF_INET, &ipaddr, ip, sizeof(ip)));
+  if(print_msgs) {
+     printf("Searching entry for IP addr: %s\n",inet_ntop(AF_INET, &ipaddr, ip, sizeof(ip)));
   //print_ip_label_table();   
-  #endif
+  }
   //pthread_mutex_lock(&mutex_lock);
   while (temp != NULL)
   {
      if(ipaddr == temp->ipaddr) { /* Ip address found in label table */
-        #if PRINT
-	printf("Found entry for ip address in LARP table\n");
-	#endif
+        if (print_msgs) {
+           printf("Found entry for ip address in LARP table\n");
+	}
         //pthread_mutex_unlock(&mutex_lock);
 	return temp;
      }
@@ -120,8 +120,13 @@ void gen_label_metric(struct ip_label_table *new_node)
 	goto again;
       new_node->label[i] = l_label;
   }  
-  /* Generate a random metric value between 1 to (2^20-1) */
-  new_node->metric = METRIC_MIN + rand_r(&seed) / (RAND_MAX / (METRIC_MAX - METRIC_MIN + 1) + 1);
+  if (attr_tlv_flag == 0) {
+    /* Generate a random metric value between 1 to (2^20-1) */
+    new_node->metric = METRIC_MIN + rand_r(&seed) / (RAND_MAX / (METRIC_MAX - METRIC_MIN + 1) + 1);
+  }
+  else /* store metric given by user for all entries */ 
+    printf("ATTR_METRIC in create_new_node: %u\n", attr_metric);
+    new_node->metric = attr_metric;
 }
 
 /*To check if the generated label already exists in the table */
