@@ -4,11 +4,12 @@ int process_larp_req(void *buff, struct sockaddr_ll *addr)
 {
    struct arphdr *ar_hdr;
    ar_hdr = (struct arphdr *) buff;
-   #if NOCHECK
-   if(check_larp_pkt(ar_hdr) != 0) { //Packet check failed. Mal formed or incorrect packet
+   if (no_check_flag != 1) {
+      if(check_larp_pkt(ar_hdr) != 0) { //Packet check failed. Malformed or incorrect packet
+        printf("Not a LARP req/malformed packet. Ignoring..\n");  
 	return 1;   
+      }
    }
-   #endif
    //call larp reply here
    larp_reply_pkt(ar_hdr, addr); 
    #if 0
@@ -22,33 +23,28 @@ int process_larp_req(void *buff, struct sockaddr_ll *addr)
 int check_larp_pkt(struct arphdr *ar_hdr)
 {
    if (ntohs(ar_hdr->ar_htype) != ARPHRD_LARP) { /*Not a LARP packet*/
-	#if DEBUG
-	printf("ARP htype is not LARP\n");
-	#endif
+	if (print_debugs)
+	   printf("ARP htype is not LARP\n");
 	return 1;
    }
    if ((ntohs(ar_hdr->ar_ptype) != ETH_P_IP) || (ntohs(ar_hdr->ar_ptype) != ETH_P_IPV6)) { /*Not an IP packet */
-	#ifdef DEBUG
-	printf("ARP protocol type is not IPV4/IPV6\n");
-	#endif
+	if (print_debugs)
+	   printf("ARP protocol type is not IPV4/IPV6\n");
 	return 1;
    }
    if(ar_hdr->ar_hln != ETH_ALEN) { /*Incorrect hardware length*/
-	#ifdef DEBUG
-	printf("Incorrect ARP hardware address length\n");
-	#endif
+	if (print_debugs)
+	   printf("Incorrect ARP hardware address length\n");
 	return 1;
    }
    if((ar_hdr->ar_pln != IP_ADDR_SIZE) || (ar_hdr->ar_pln != IPV6_ADDR_SIZE)) { /*4 for Ipv4 and 16 for IPV6*/
-	#ifdef DEBUG
-	printf("Incorrect protocol address length\n");
-	#endif
+	if (print_debugs)
+	   printf("Incorrect protocol address length\n");
 	return 1;
    }
    if(ntohs(ar_hdr->ar_op) != 1) { /*1 for LARP req, 2 for reply and 10 for ARP_NAK*/
-	#ifdef DEBUG
-	printf("ARP OP: Not a LARP request packet\n");
-	#endif
+	if (print_debugs)
+	   printf("ARP OP: Not a LARP request packet\n");
 	return 1;
    }
    return 0;

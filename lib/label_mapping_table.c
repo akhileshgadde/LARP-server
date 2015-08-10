@@ -120,13 +120,20 @@ void gen_label_metric(struct ip_label_table *new_node)
 	goto again;
       new_node->label[i] = l_label;
   }  
-  if (attr_tlv_flag == 0) {
+  if (attr_tlv_flag == 1) {
+     printf("Attr_metric: %u\n", attr_metric);
+     if (attr_metric == 0) { /* No Metric value provided by user, generating a random metric */
     /* Generate a random metric value between 1 to (2^20-1) */
     new_node->metric = METRIC_MIN + rand_r(&seed) / (RAND_MAX / (METRIC_MAX - METRIC_MIN + 1) + 1);
-  }
-  else /* store metric given by user for all entries */ 
-    printf("ATTR_METRIC in create_new_node: %u\n", attr_metric);
+     }
+    else { /* store metric given by user for all entries */ 
+    if (print_msgs)
+	    printf("ATTR_METRIC in create_new_node: %u\n", attr_metric);
     new_node->metric = attr_metric;
+    }
+  }
+  else /*attr_tlv_flag = 0 */
+	attr_metric = 0;
 }
 
 /*To check if the generated label already exists in the table */

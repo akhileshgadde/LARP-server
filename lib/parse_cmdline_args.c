@@ -25,19 +25,22 @@ int parse_cmdline (int argc, char *argv[])
 {
   int long_index = 0;
   int opt = 0;
-  while ((opt = getopt_long(argc, argv, "l:a::e:npd", long_options, &long_index)) != -1)
+  while ((opt = getopt_long(argc, argv, "l:am:e:npd", long_options, &long_index)) != -1)
   {
      switch (opt) {
-	case 'l': printf("Label_count: %d\n", atoi(optarg));
-		  label_count = atoi(optarg);
+	case 'l': //printf("Label_count: %d\n", atoi(optarg));
+		  label_count = strtol(optarg, NULL, 0);
 		  break;
 	case 'a': attr_tlv_flag = 1; /*enable ATTR_TLV */
+		  break;
 		  //if(optarg) { /*metric is optional, else a randomly generated metric value is used */
 			//attr_metric = strtoul(optarg, 0, 10);
 			//printf("ATTR_METRIC: %u\n", attr_metric);
 		  //}
+	case 'm': attr_metric = strtoul(optarg, NULL, 0);
+//		  printf("ATTR_METRIC in parse_cmd_args: %u\n", attr_metric);
 		  break;
-	case 'e': entropy_flag = atoi(optarg);
+	case 'e': entropy_flag = strtol(optarg, NULL, 0);
 		  break;
 	case 'n': no_check_flag = 1; /* enable no check flag */
 		  break;
@@ -57,8 +60,8 @@ int parse_cmdline (int argc, char *argv[])
 
 void print_correct_usage()
 {
-  printf("Usage:\n ./server [-n] [-p] [-d] [-l <num>] [-a [<num>]] [-e <1/0>]\n");
-  printf("or\n");
-  printf("./server [--no_check] [--print_msgs] [--print_debugs] [--label_count <num>] [--attribute_tlv [<num>]] [--entropy_flag <1/0>]\n");
+  printf("Usage:\n ./server [-n] [-p] [-d] [-a] [-m num] [-l <num>] [-e <1/0>]\n");
+  printf("\t\tor\n");
+  printf("./server [--no_check] [--print_msgs] [--print_debugs] [--attr_tlv] [--attr_metric num] [label_count <num>] [--entropy_flag <1/0>]\n");
 }
   	 
