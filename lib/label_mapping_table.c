@@ -72,7 +72,8 @@ struct ip_label_table* get_label_entry (uint8_t addr[IP_ADDR_SIZE])
   }
   //pthread_mutex_unlock(&mutex_lock);
   /* creating a new node in the linked list with the ip-label mapping */
-  printf("Creating new entry in lARP table\n");
+  if (print_msgs)
+      printf("Creating new entry in lARP table\n");
   return (create_new_entry(ipaddr));
 }
 
@@ -164,7 +165,7 @@ uint32_t* find_label(uint32_t ipaddr)
      return NULL;
   while (tmp != NULL)  
   {
-       if (ipaddr == tmp->ipaddr) {	/* found Ip addr in table */
+       if (ipaddr == tmp->ipaddr)	/* found Ip addr in table */
 	  return tmp->label;
        tmp = tmp->next;
   }

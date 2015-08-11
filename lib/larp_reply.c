@@ -4,6 +4,8 @@ int larp_reply_pkt(struct arphdr *ar_hdr, struct sockaddr_ll *recv_addr)
 {
   int send_sockfd;
   int i, send_bytes, frame_length;
+  //uint32_t ipaddr_n32;
+  //char ipaddr_p[INET_ADDRSTRLEN]; /* to print IP address in presentation format */
   struct sockaddr_ll send_addr;
   struct arphdr send_arhdr; /* standard ARP header fields */
   struct tlv_type_len type_len; /* variable of type-len struct */
@@ -97,9 +99,10 @@ int larp_reply_pkt(struct arphdr *ar_hdr, struct sockaddr_ll *recv_addr)
 	perror("Sendto() for LARP reply failed\n");
 	exit (1);
   }
-  #ifdef DEBUG
-  printf("Successfuly sent LARP reply of size: %d\n", send_bytes);
-  #endif
+  /* convert Ip to 32 bit unisgned int */
+  //u32fromu8(send_arhdr.ar_tha, &ipaddr_n32);
+  printf("Successfully sent LARP reply of size: %d to %u.%u.%u.%u\n", send_bytes, send_arhdr.ar_tip[0], send_arhdr.ar_tip[1], send_arhdr.ar_tip[2], send_arhdr.ar_tip[3] );
+  
   /* freeing dynamically allocated memory */
   free(s_haddr);
   free(l_stack);
