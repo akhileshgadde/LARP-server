@@ -33,3 +33,4 @@ void free_alloc_mem();
 int find_dup_label(uint32_t l_label);
 void gen_label_metric(struct ip_label_table *new_node);
 int delete_label_entry(uint32_t ipaddr);
+uint32_t* find_label(uint32_t ipaddr);

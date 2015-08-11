@@ -155,6 +155,22 @@ int find_dup_label(uint32_t l_label)
    return 0;
 }
 
+/* search and find the label(s) for given IP address */
+uint32_t* find_label(uint32_t ipaddr)
+{
+  struct ip_label_table *tmp = table_head;
+  signal(SIGINT, sigintHandler);
+  if (table_head == NULL)
+     return NULL;
+  while (tmp != NULL)  
+  {
+       if (ipaddr == tmp->ipaddr) {	/* found Ip addr in table */
+	  return tmp->label;
+       tmp = tmp->next;
+  }
+  return NULL; /* No entry found */
+}
+ 
 /* search and return the address of the last node in the table */
 struct ip_label_table* find_last_node ()
 {
