@@ -62,13 +62,12 @@ int main (int argc, char *argv[])
 	/* LARP socket is readable now*/
 	if(FD_ISSET(larp_sockfd, &rset))
 	{
-		/*code for creating a new thread and handling the recvfrom (error case also < 0 => error */
-
-		//for (i=0; i<1; i++) 
-		if(pthread_create(&larp_thread_id, NULL, larp_req_recv, (void *) &larp_sockfd) != 0)  { //non-zero is error
-                    perror("LARP request thread creation error. Ignoring the packet.\n");
-                }
+            /*code for creating a new thread and handling the recvfrom (error case also < 0 => error */
+	    if(pthread_create(&larp_thread_id, NULL, larp_req_recv, (void *) &larp_sockfd) != 0){ //non-zero is error
+                  perror("LARP request thread creation error. Ignoring the packet.\n");
+           }
 	}
+
         /* MPLS data socket is readabale now */
 	if(FD_ISSET(data_sockfd, &rset))
 	{

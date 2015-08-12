@@ -5,12 +5,13 @@ void hexDump (int op, void *addr, int len) {
     int i;
     unsigned char buff[17];
     unsigned char *pc = (unsigned char*)addr;
+    #if 0
     /* print LARP request or reply */
     if ( op == LARP_REQ)
         printf ("LARP request:\n");
     else if (op == LARP_REP)
 	printf ("LARP reply:\n");
-
+    #endif
     // Process every byte in the data.
     for (i = 0; i < len; i++) {
         // Multiple of 16 means new line (with line offset).
