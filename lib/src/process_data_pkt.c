@@ -21,17 +21,19 @@ int process_mpls_data (void *buff, struct sockaddr_ll *addr)
   }
   /* start of Ip header */
   ip_t *ip_hdr = (ip_t *) buff + offset;
-  uint32_t ipaddr;
+  uint32_t src_ipaddr, dst_ipaddr;
   /* convert ip address[4] to an unsigned int32 */
-  u32fromu8(ip_hdr->src_addr, &ipaddr);
-  char ip[INET_ADDRSTRLEN]; /* to print IP address in presentation format */
-  printf("Received MPLS data packet from %s\n", inet_ntop(AF_INET, &ipaddr, ip, sizeof(ip)));
-  if (find_label(ipaddr) != NULL) {
-	memcpy(label_cache, find_label(ipaddr), label_count * sizeof(uint32_t));
+  u32fromu8(ip_hdr->src_addr, &src_ipaddr);
+  u32fromu8(ip_hdr->dest_addr, &dst_ipaddr);
+  char src_ip[INET_ADDRSTRLEN], dst_ip[INET_ADDRSTRLEN]; /* to print IP address in presentation format */
+  printf("Received MPLS data packet from %s for %s\n", inet_ntop(AF_INET, &src_ipaddr, src_ip, sizeof(src_ip)), inet_ntop(AF_INET, &dst_ipaddr, dst_ip, sizeof(dst_ip)));
+  if (find_label(dst_ipaddr) != NULL) {
+	memcpy(label_cache, find_label(dst_ipaddr), label_count * sizeof(uint32_t));
 	check_label_correctness(label_cache, mpls_label);
   }
   else {
-        printf("No entry for Ip address %s in L-ARP cache table\n", ip);
+	if (print_msgs)
+	        printf("No entry for Ip address %s in L-ARP cache table\n", dst_ip);
 	invalid_pkt_ct++;
   }
   if (print_debugs)
