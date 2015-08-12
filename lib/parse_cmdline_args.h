@@ -9,7 +9,8 @@ static struct option long_options[] = {
 	{"entropy_flag_en", required_argument, NULL, 'e'},
 	{"no_check", no_argument, NULL, 'n'}, 
 	{"print_msgs", no_argument, NULL, 'p'},
-	{"print_debugs", no_argument, NULL, 'd'}
+	{"print_debugs", no_argument, NULL, 'd'},
+	{"label_range", required_argument, NULL, 'r'}
   };
 
 int parse_cmdline(int argc, char *argv[]);

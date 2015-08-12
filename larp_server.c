@@ -111,7 +111,7 @@ void *larp_req_recv (void *sockfd)
        printf("LARP Req: Received %zd bytes ", pkt_len);
        printf("from interface index: %d\n", send_addr.sll_ifindex);
     }
-    process_larp_req(recvbuf, &send_addr);
+    process_larp_req(recvbuf, &send_addr, send_addr.sll_ifindex);
     #if 0
     ar_hdr = (struct arphdr *) recvbuf;
     printf("SRC ip address: %u.%u.%u.%u\n", ar_hdr->ar_sip[0], ar_hdr->ar_sip[1], ar_hdr->ar_sip[2], ar_hdr->ar_sip[3]);

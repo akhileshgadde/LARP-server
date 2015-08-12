@@ -112,15 +112,20 @@ void gen_label_metric(struct ip_label_table *new_node)
   int i;
   unsigned int seed = time(NULL) + (unsigned int) pthread_self(); /* seed for rand_r() */
   uint32_t l_label; /* variable to hold the random label generated and checked for any overlap */
-  /* To generate a random label between 16 and (2^20-1) */
-  for (i = 0; i < label_count; i++)
+  if (label_range_en == 0) /* No label range specified by user. Use default values */
   {
-     again:
-      l_label = LABEL_MIN + rand_r(&seed) / (RAND_MAX / (LABEL_MAX - LABEL_MIN + 1) + 1);
-      if (find_dup_label(l_label) != 0) /* check for any duplication of the generated label */
+     label_range_min = LABEL_MIN;
+     label_range_max = LABEL_MAX;
+  }
+    /* To generate a random label between 16 and (2^20-1) */
+    for (i = 0; i < label_count; i++)
+    {
+       again:
+        l_label = label_range_min + rand_r(&seed) / (RAND_MAX / (label_range_max - label_range_min + 1) + 1);
+        if (find_dup_label(l_label) != 0) /* check for any duplication of the generated label */
 	goto again;
-      new_node->label[i] = l_label;
-  }  
+        new_node->label[i] = l_label;
+    } 
   if (attr_tlv_flag == 1) {
      printf("Attr_metric: %u\n", attr_metric);
      if (attr_metric == 0) { /* No Metric value provided by user, generating a random metric */

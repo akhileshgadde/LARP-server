@@ -21,6 +21,12 @@ extern int print_msgs;// = 0; /* disabled by default */
 /* print debugs */
 extern int print_debugs;// = 0; /* disabled by default */
 
+/*label_range enabled/disabled flag */
+extern int label_range_en; 
+
+/*label range min and max values */
+extern uint32_t label_range_min;
+extern uint32_t label_range_max;
 
 /*Arp header structure*/
 struct arphdr

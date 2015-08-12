@@ -4,13 +4,15 @@ int larp_reply_pkt(struct arphdr *ar_hdr, struct sockaddr_ll *recv_addr)
 {
   int send_sockfd;
   int i, send_bytes, frame_length;
-  //uint32_t ipaddr_n32;
+  uint32_t ipaddr_n32;
   //char ipaddr_p[INET_ADDRSTRLEN]; /* to print IP address in presentation format */
   struct sockaddr_ll send_addr;
   struct arphdr send_arhdr; /* standard ARP header fields */
   struct tlv_type_len type_len; /* variable of type-len struct */
   struct label_stack *l_stack = (struct label_stack *) malloc(label_count * sizeof(struct label_stack)); /* For label stack */
   struct attr_tlv a_tlv; /* For Attributes TLV */
+  char if_name[IFNAMSIZ];
+  uint32_t metric_val;
   unsigned char *s_haddr = allocate_ustrmem (6);
   /*create a RAW PF_PACKET socket for sending out the reply*/
   send_sockfd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
@@ -99,32 +101,35 @@ int larp_reply_pkt(struct arphdr *ar_hdr, struct sockaddr_ll *recv_addr)
 	perror("Sendto() for LARP reply failed\n");
 	exit (1);
   }
-  /* convert Ip to 32 bit unisgned int */
-  //u32fromu8(send_arhdr.ar_tha, &ipaddr_n32);
-  printf("Successfully sent LARP reply of size: %d to %u.%u.%u.%u\n", send_bytes, send_arhdr.ar_tip[0], send_arhdr.ar_tip[1], send_arhdr.ar_tip[2], send_arhdr.ar_tip[3] );
-  
+  get_interface_name (send_addr.sll_ifindex, if_name);
+  printf("Sent LARP reply to %u.%u.%u.%u for target %u.%u.%u.%u on interface: %s with label(s): ", send_arhdr.ar_tip[0], send_arhdr.ar_tip[1], send_arhdr.ar_tip[2], send_arhdr.ar_tip[3], send_arhdr.ar_sip[0], send_arhdr.ar_sip[1], send_arhdr.ar_sip[2], send_arhdr.ar_sip[3],if_name);
+  u32fromu8(send_arhdr.ar_sip, &ipaddr_n32);
+  uint32_t *label_stk = (uint32_t *) calloc (0, label_count * sizeof(uint32_t));
+  memcpy(label_stk, find_label(ipaddr_n32), label_count * sizeof(uint32_t));
+  print_label_stack(label_stk);
+  metric_val = find_metric(ipaddr_n32);
+  if (metric_val != 0)
+        printf("and with metric: %u\n", find_metric(ipaddr_n32)); 
+  else
+	printf("and with no ATTR_TLV.\n");
   /* freeing dynamically allocated memory */
+  free (label_stk);
   free(s_haddr);
   free(l_stack);
 }
 
-void get_mac(int if_index, unsigned char *s_haddr)
+void print_label_stack(uint32_t *label_stk)
 {
-  int sockfd;
-  struct ifreq if_mac;
-  if ((sockfd = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW)) == -1)
-      perror("get_mac Socket");
-  memset(&if_mac, 0, sizeof(struct ifreq));
-  if_mac.ifr_ifindex = if_index;
-   /* Use ioctl() to look up interface name from Interface index*/
-  if (ioctl(sockfd, SIOCGIFNAME, &if_mac) < 0)
-      perror("IOCTL: SIOCGIFNAME error");
-  /*  Use ioctl() to look up MAC address from interface name */
-  if (ioctl(sockfd, SIOCGIFHWADDR, &if_mac) < 0)
-      perror("IOCTL: SIOCGIFHWADDR error");
-  memcpy(s_haddr, if_mac.ifr_hwaddr.sa_data, 6 * sizeof (uint8_t));
-  //return ((unsigned char ) if_mac.ifr_hwaddr.sa_data);
-}
+  int i;
+  if (label_stk != NULL) 
+  {
+      for (i = 0; i < label_count-1; i++)
+           printf("%u, ",label_stk[i]);
+      printf("%u ", label_stk[i]);
+  }
+  else
+	printf("No Label entry.");
+} 
 
 /* Allocate memory for an array of unsigned chars */
 uint8_t * allocate_ustrmem (int len)

@@ -1,8 +1,9 @@
 #include "process_pkt.h"
 
-int process_larp_req(void *buff, struct sockaddr_ll *addr)
+int process_larp_req(void *buff, struct sockaddr_ll *addr, int ifindex)
 {
    struct arphdr *ar_hdr;
+   char if_name[IFNAMSIZ]; /* to store the interface name */
    ar_hdr = (struct arphdr *) buff;
    if (no_check_flag != 1) {
       if(check_larp_pkt(ar_hdr) != 0) { //Packet check failed. Malformed or incorrect packet
@@ -11,16 +12,13 @@ int process_larp_req(void *buff, struct sockaddr_ll *addr)
 	return 1;   
       }
    }
+   get_interface_name (ifindex, if_name);
+   printf("Received LARP request from %u.%u.%u.%u for target %u.%u.%u.%u on interface: %s\n", ar_hdr->ar_sip[0], ar_hdr->ar_sip[1],ar_hdr->ar_sip[2],ar_hdr->ar_sip[3], ar_hdr->ar_tip[0],ar_hdr->ar_tip[1],ar_hdr->ar_tip[2],ar_hdr->ar_tip[3], if_name);
    //call larp reply here
    larp_reply_pkt(ar_hdr, addr); 
-   #if 0
-   printf("ARP hw type: %u\n", ntohs(ar_hdr->ar_htype));
-   printf("Received from interface index: %d\n", addr->sll_ifindex);
-   printf("SRC ip address: %u.%u.%u.%u\n", ar_hdr->ar_sip[0], ar_hdr->ar_sip[1], ar_hdr->ar_sip[2], ar_hdr->ar_sip[3]); 
-   printf("ARP code: %u\n", ntohs(ar_hdr->ar_op));
-   #endif
 } 
 
+/* check for the correctness of fields in LARP request packet */
 int check_larp_pkt(struct arphdr *ar_hdr)
 {
    if (ntohs(ar_hdr->ar_htype) != ARPHRD_LARP) { /*Not a LARP packet*/

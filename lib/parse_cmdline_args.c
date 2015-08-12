@@ -20,16 +20,30 @@ int print_msgs = 0; /* disabled by default */
 /* print debugs */
 int print_debugs = 0; /* disabled by default */
 
+/*label_range enabled/disabled flag */
+int label_range_en = 0;
+
+/*label range min and max values */
+uint32_t label_range_min = 0;
+uint32_t label_range_max = 0;
+
 /* To parse the command line arguments and set flags accordingly */
 int parse_cmdline (int argc, char *argv[])
 {
   int long_index = 0;
   int opt = 0;
-  while ((opt = getopt_long(argc, argv, "l:am:e:npd", long_options, &long_index)) != -1)
+  char *result = NULL;
+  while ((opt = getopt_long(argc, argv, "l:ar:m:e:npd", long_options, &long_index)) != -1)
   {
      switch (opt) {
 	case 'l': //printf("Label_count: %d\n", atoi(optarg));
 		  label_count = strtol(optarg, NULL, 0);
+		  if(label_count <= 0)
+		  {
+			printf("Invalid label count\n");
+			print_correct_usage();
+			exit (EXIT_FAILURE);
+		  }
 		  break;
 	case 'a': attr_tlv_flag = 1; /*enable ATTR_TLV */
 		  break;
@@ -39,14 +53,41 @@ int parse_cmdline (int argc, char *argv[])
 		  //}
 	case 'm': attr_metric = strtoul(optarg, NULL, 0);
 //		  printf("ATTR_METRIC in parse_cmd_args: %u\n", attr_metric);
+		  if (!((attr_metric >= METRIC_MIN) && (attr_metric <= METRIC_MAX)))
+		  {
+			printf("Invalid metric value\n");
+			print_correct_usage();
+			exit (EXIT_FAILURE);
+		  }
 		  break;
 	case 'e': entropy_flag = strtol(optarg, NULL, 0);
+		  if ((entropy_flag != 0) && (entropy_flag != 1))
+		  {
+			printf("Invalid entropy flag\n");
+			print_correct_usage();
+			exit (EXIT_FAILURE);
+		  }
 		  break;
 	case 'n': no_check_flag = 1; /* enable no check flag */
 		  break;
 	case 'p': print_msgs = 1; /* Enable print messages */
 		  break;
 	case 'd': print_debugs = 1; /* enable debugs */
+		  break;
+	case 'r': result = strtok(optarg,", -");
+		  if  (result)
+			label_range_min = strtoul(result, NULL, 0);	
+		  result = strtok(NULL, ",");
+		  if  (result)
+			label_range_max = strtoul(result, NULL, 0);
+		  if ((label_range_min == 0) || label_range_max == 0 || label_range_min > label_range_max)
+		  {
+			printf("Label range is not specified/incorrect\n");
+			print_correct_usage();
+			exit (EXIT_FAILURE);
+		  }
+		  //printf("Label range: %u-%u\n", label_range_min, label_range_max);
+		  label_range_en = 1; /* enable label range flag */
 		  break;
 	default:  print_correct_usage();
 		  exit (EXIT_FAILURE);
@@ -60,8 +101,8 @@ int parse_cmdline (int argc, char *argv[])
 
 void print_correct_usage()
 {
-  printf("Usage:\n ./server [-n] [-p] [-d] [-a] [-m num] [-l <num>] [-e <1/0>]\n");
-  printf("\t\tor\n");
-  printf("./server [--no_check] [--print_msgs] [--print_debugs] [--attr_tlv] [--attr_metric num] [label_count <num>] [--entropy_flag <1/0>]\n");
+  printf("Usage: ./server [-n] [-p] [-d] [-a] [-m num] [-l num] [-r min,max] [-e 1/0]\n");
+  printf("\t\t\tor\n");
+  printf("       ./server [--no_check] [--print_msgs] [--print_debugs] [--attr_tlv] [--attr_metric num] [--label_count num] [--label_range min,max] [--entropy_flag 1/0]\n");
 }
   	 
