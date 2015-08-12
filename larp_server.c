@@ -105,6 +105,8 @@ void *larp_req_recv (void *sockfd)
 	perror("Recceived ARP request size is invalid. Ignoring..\n");
 	pthread_exit(NULL);
     } 
+    if (hex_dump_flag)
+       hexDump(MPLS_DATA, recvbuf, pkt_len);
     if (print_debugs)
     { 
        printf("LARP Req: Received %zd bytes ", pkt_len);

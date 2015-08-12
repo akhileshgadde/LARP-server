@@ -12,6 +12,8 @@ void hexDump (int op, void *addr, int len) {
     else if (op == LARP_REP)
 	printf ("LARP reply:\n");
     #endif
+    if (op == MPLS_DATA)
+	printf("MPLS data packet:\n");
     // Process every byte in the data.
     for (i = 0; i < len; i++) {
         // Multiple of 16 means new line (with line offset).
