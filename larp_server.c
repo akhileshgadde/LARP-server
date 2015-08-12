@@ -1,7 +1,7 @@
 /* You need to run the program as **root** user for the raw sockets to be created */
 /* gcc-g -pthread test_server1.c -o server */
 
-#include "lib/server_def.h"
+#include "lib/hdrs/server_def.h"
 
 int main (int argc, char *argv[])
 {

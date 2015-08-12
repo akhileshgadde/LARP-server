@@ -5,41 +5,45 @@ LIBS = -lpthread\
 FLAGS = -g -O2
 CFLAGS = ${FLAGS} -I -Wall
 
-OBJS = htonl3.o label_mapping_table.o larp_reply.o process_pkt.o parse_cmdline_args.o process_data_pkt.o ioctl_fns.o hexdump.o
+HDRS_PATH = lib/hdrs
+SRC_PATH  = lib/src
+OBJ_PATH  = lib/obj  
+
+OBJS = lib/obj/htonl3.o lib/obj/label_mapping_table.o lib/obj/larp_reply.o lib/obj/process_data_pkt.o lib/obj/parse_cmdline_args.o lib/obj/process_process_larp_req.o lib/obj/ioctl_fns.o lib/obj/hexdump.o
 
 all: server
 
-server: larp_server.o $(OBJS)
-	${CC} ${FLAGS} -o server larp_server.o $(OBJS) ${LIBS}
+server: lib/obj/larp_server.o $(OBJS)
+	${CC} ${FLAGS} -o server lib/obj/larp_server.o $(OBJS) ${LIBS}
 
-larp_server.o: larp_server.c $(OBJS)
-	${CC} ${CFLAGS} -o larp_server.o -c larp_server.c ${LIBS}
+lib/obj/larp_server.o: larp_server.c $(OBJS)
+	${CC} ${CFLAGS} -o lib/obj/larp_server.o -c larp_server.c ${LIBS}
 
-htonl3.o: lib/htonl3.c lib/htonl3.h
-	${CC} ${CFLAGS} -c lib/htonl3.c
+lib/obj/htonl3.o: lib/src/htonl3.c lib/hdrs/htonl3.h
+	${CC} ${CFLAGS} -o lib/obj/htonl3.o -c lib/src/htonl3.c
 
-label_mapping_table.o: lib/label_mapping_table.c lib/label_mapping_table.h
-	${CC} ${CFLAGS} -c lib/label_mapping_table.c
+lib/obj/label_mapping_table.o: lib/src/label_mapping_table.c lib/hdrs/label_mapping_table.h
+	${CC} ${CFLAGS} -o lib/obj/label_mapping_table.o -c lib/src/label_mapping_table.c
 
-larp_reply.o: lib/larp_reply.c lib/larp_reply.h
-	${CC} ${CFLAGS} -c lib/larp_reply.c
+lib/obj/larp_reply.o: lib/src/larp_reply.c lib/hdrs/larp_reply.h
+	${CC} ${CFLAGS}  -o lib/obj/larp_reply.o -c lib/src/larp_reply.c
 
-process_pkt.o: lib/process_pkt.c lib/process_pkt.h
-	${CC} ${CFLAGS} -c lib/process_pkt.c
+lib/obj/process_process_larp_req.o: lib/src/process_larp_req.c lib/hdrs/process_larp_req.h
+	${CC} ${CFLAGS}  -o lib/obj/process_process_larp_req.o -c lib/src/process_larp_req.c
 
-parse_cmdline_args.o: lib/parse_cmdline_args.c lib/parse_cmdline_args.h
-	${CC} ${CFLAGS} -c lib/parse_cmdline_args.c
+lib/obj/parse_cmdline_args.o: lib/src/parse_cmdline_args.c lib/hdrs/parse_cmdline_args.h
+	${CC} ${CFLAGS}  -o lib/obj/parse_cmdline_args.o -c lib/src/parse_cmdline_args.c
 
-process_data_pkt.o: lib/process_data_pkt.c lib/process_data_pkt.h
-	${CC} ${CFLAGS} -c lib/process_data_pkt.c
+lib/obj/process_data_pkt.o: lib/src/process_data_pkt.c lib/hdrs/process_data_pkt.h
+	${CC} ${CFLAGS}  -o lib/obj/process_data_pkt.o -c lib/src/process_data_pkt.c
 
-ioctl_fns.o: lib/ioctl_fns.c lib/ioctl_fns.h
-	${CC} ${CFLAGS} -c lib/ioctl_fns.c
+lib/obj/ioctl_fns.o: lib/src/ioctl_fns.c lib/hdrs/ioctl_fns.h
+	${CC} ${CFLAGS}  -o lib/obj/ioctl_fns.o -c lib/src/ioctl_fns.c
 
-hexdump.o: lib/hexdump.c lib/hexdump.h
-	${CC} ${CFLAGS} -c lib/hexdump.c
+lib/obj/hexdump.o: lib/src/hexdump.c lib/hdrs/hexdump.h
+	${CC} ${CFLAGS}  -o lib/obj/hexdump.o -c lib/src/hexdump.c
 
 clean: 
-	rm server larp_server.o $(OBJS)
+	rm server lib/obj/larp_server.o $(OBJS)
 
 

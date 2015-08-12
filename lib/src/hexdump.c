@@ -1,5 +1,5 @@
 /* Base code has been taken from http://stackoverflow.com/questions/7775991/how-to-get-hexdump-of-a-structure-data and modified */
-#include "hexdump.h"
+#include "../hdrs/hexdump.h"
 
 void hexDump (int op, void *addr, int len) {
     int i;

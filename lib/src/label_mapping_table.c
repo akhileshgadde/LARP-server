@@ -1,4 +1,4 @@
-#include "label_mapping_table.h"
+#include "../hdrs/label_mapping_table.h"
 
 /* Signal handler for SIGINT */
 void sigintHandler(int sig_num)
