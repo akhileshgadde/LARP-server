@@ -1,8 +1,9 @@
 #include "process_pkt.h"
 
-int process_larp_req(void *buff, struct sockaddr_ll *addr, int ifindex)
+int process_larp_req(void *buff, struct sockaddr_ll *addr, int ifindex, ssize_t len)
 {
    struct arphdr *ar_hdr;
+   int pkt_len = (int) len;
    char if_name[IFNAMSIZ]; /* to store the interface name */
    ar_hdr = (struct arphdr *) buff;
    if (no_check_flag != 1) {
@@ -14,6 +15,8 @@ int process_larp_req(void *buff, struct sockaddr_ll *addr, int ifindex)
    }
    get_interface_name (ifindex, if_name);
    printf("Received LARP request from %u.%u.%u.%u for target %u.%u.%u.%u on interface: %s\n", ar_hdr->ar_sip[0], ar_hdr->ar_sip[1],ar_hdr->ar_sip[2],ar_hdr->ar_sip[3], ar_hdr->ar_tip[0],ar_hdr->ar_tip[1],ar_hdr->ar_tip[2],ar_hdr->ar_tip[3], if_name);
+   if (hex_dump_flag)
+      hexDump (ntohs(ar_hdr->ar_op), buff, pkt_len); 
    //call larp reply here
    larp_reply_pkt(ar_hdr, addr); 
 } 

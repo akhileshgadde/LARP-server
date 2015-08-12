@@ -112,6 +112,8 @@ int larp_reply_pkt(struct arphdr *ar_hdr, struct sockaddr_ll *recv_addr)
         printf("and with metric: %u\n", find_metric(ipaddr_n32)); 
   else
 	printf("and with no ATTR_TLV.\n");
+  if (hex_dump_flag) /* print hex_dump of packet if flag enabled */
+     hexDump (ntohs(send_arhdr.ar_op), buffer+14 , frame_length - 14);
   /* freeing dynamically allocated memory */
   free (label_stk);
   free(s_haddr);

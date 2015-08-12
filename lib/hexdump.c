@@ -1,13 +1,15 @@
+/* Base code has been taken from http://stackoverflow.com/questions/7775991/how-to-get-hexdump-of-a-structure-data and modified */
+#include "hexdump.h"
 
-
-void hexDump (char *desc, void *addr, int len) {
+void hexDump (int op, void *addr, int len) {
     int i;
     unsigned char buff[17];
     unsigned char *pc = (unsigned char*)addr;
-
-    // Output description if given.
-    if (desc != NULL)
-        printf ("%s:\n", desc);
+    /* print LARP request or reply */
+    if ( op == LARP_REQ)
+        printf ("LARP request:\n");
+    else if (op == LARP_REP)
+	printf ("LARP reply:\n");
 
     // Process every byte in the data.
     for (i = 0; i < len; i++) {

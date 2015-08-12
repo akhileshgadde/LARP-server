@@ -28,6 +28,9 @@ extern int label_range_en;
 extern uint32_t label_range_min;
 extern uint32_t label_range_max;
 
+/*enable/disable packet hex dump */
+extern int hex_dump_flag; 
+
 /*Arp header structure*/
 struct arphdr
 {

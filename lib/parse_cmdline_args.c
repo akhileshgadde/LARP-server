@@ -27,13 +27,16 @@ int label_range_en = 0;
 uint32_t label_range_min = 0;
 uint32_t label_range_max = 0;
 
+/*enable/disable hexdump flag */
+int hex_dump_flag = 0;
+
 /* To parse the command line arguments and set flags accordingly */
 int parse_cmdline (int argc, char *argv[])
 {
   int long_index = 0;
   int opt = 0;
   char *result = NULL;
-  while ((opt = getopt_long(argc, argv, "l:ar:m:e:npd", long_options, &long_index)) != -1)
+  while ((opt = getopt_long(argc, argv, "l:ar:m:e:nhpd", long_options, &long_index)) != -1)
   {
      switch (opt) {
 	case 'l': //printf("Label_count: %d\n", atoi(optarg));
@@ -51,6 +54,8 @@ int parse_cmdline (int argc, char *argv[])
 			//attr_metric = strtoul(optarg, 0, 10);
 			//printf("ATTR_METRIC: %u\n", attr_metric);
 		  //}
+	case 'h': hex_dump_flag = 1;
+		  break;
 	case 'm': attr_metric = strtoul(optarg, NULL, 0);
 //		  printf("ATTR_METRIC in parse_cmd_args: %u\n", attr_metric);
 		  if (!((attr_metric >= METRIC_MIN) && (attr_metric <= METRIC_MAX)))
@@ -101,8 +106,8 @@ int parse_cmdline (int argc, char *argv[])
 
 void print_correct_usage()
 {
-  printf("Usage: ./server [-n] [-p] [-d] [-a] [-m num] [-l num] [-r min,max] [-e 1/0]\n");
+  printf("Usage: ./server [-n] [-p] [-d] [-h] [-a] [-m num] [-l num] [-r min,max] [-e 1/0]\n");
   printf("\t\t\tor\n");
-  printf("       ./server [--no_check] [--print_msgs] [--print_debugs] [--attr_tlv] [--attr_metric num] [--label_count num] [--label_range min,max] [--entropy_flag 1/0]\n");
+  printf("       ./server [--no_check] [--print_msgs] [--print_debugs] [--print_hex_dump] [--attr_tlv] [--attr_metric num] [--label_count num] [--label_range min,max] [--entropy_flag 1/0]\n");
 }
   	 

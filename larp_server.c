@@ -99,7 +99,7 @@ void *larp_req_recv (void *sockfd)
     bzero(&send_addr, sizeof(send_addr)); 
     pkt_len = recvfrom(recv_sockfd, recvbuf, ETH_FRAME_LEN, 0, (SA *) &send_addr, &from_len);
     if (pkt_len < 0) { /* Empty packet */
-	perror("Recvfrom Error:Empty packet\n");
+	perror("Recvfrom Error: Empty packet\n");
         pthread_exit(NULL);
     }
     if (pkt_len != ARP_REQ_SIZE) { /* Checking ARP request size */
@@ -111,7 +111,7 @@ void *larp_req_recv (void *sockfd)
        printf("LARP Req: Received %zd bytes ", pkt_len);
        printf("from interface index: %d\n", send_addr.sll_ifindex);
     }
-    process_larp_req(recvbuf, &send_addr, send_addr.sll_ifindex);
+    process_larp_req(recvbuf, &send_addr, send_addr.sll_ifindex, pkt_len);
     #if 0
     ar_hdr = (struct arphdr *) recvbuf;
     printf("SRC ip address: %u.%u.%u.%u\n", ar_hdr->ar_sip[0], ar_hdr->ar_sip[1], ar_hdr->ar_sip[2], ar_hdr->ar_sip[3]);

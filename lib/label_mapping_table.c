@@ -127,7 +127,7 @@ void gen_label_metric(struct ip_label_table *new_node)
         new_node->label[i] = l_label;
     } 
   if (attr_tlv_flag == 1) {
-     printf("Attr_metric: %u\n", attr_metric);
+     //printf("Attr_metric: %u\n", attr_metric);
      if (attr_metric == 0) { /* No Metric value provided by user, generating a random metric */
     /* Generate a random metric value between 1 to (2^20-1) */
     new_node->metric = METRIC_MIN + rand_r(&seed) / (RAND_MAX / (METRIC_MAX - METRIC_MIN + 1) + 1);

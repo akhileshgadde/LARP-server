@@ -10,7 +10,8 @@ static struct option long_options[] = {
 	{"no_check", no_argument, NULL, 'n'}, 
 	{"print_msgs", no_argument, NULL, 'p'},
 	{"print_debugs", no_argument, NULL, 'd'},
-	{"label_range", required_argument, NULL, 'r'}
+	{"label_range", required_argument, NULL, 'r'},
+	{"print_hex_dump", no_argument, NULL, 'h'}
   };
 
 int parse_cmdline(int argc, char *argv[]);
