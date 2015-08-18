@@ -33,6 +33,6 @@ uint32_t invalid_pkt_ct = 0;
 uint32_t valid_incorrect_label = 0;
 uint32_t valid_correct_label = 0;
 
-int process_mpls_data (void *buff, struct sockaddr_ll *addr);
+int process_mpls_data (void *buff, struct sockaddr_ll *addr, int pkt_len);
 void check_label_correctness (uint32_t *local_cache, uint32_t *data_pkt_labels);
 void print_pkt_stats();

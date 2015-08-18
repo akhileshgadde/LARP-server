@@ -24,6 +24,7 @@ int process_larp_req(void *buff, struct sockaddr_ll *addr, int ifindex, ssize_t 
 /* check for the correctness of fields in LARP request packet */
 int check_larp_pkt(struct arphdr *ar_hdr)
 {
+   uint32_t src_ip32, dst_ip32;
    if (ntohs(ar_hdr->ar_htype) != ARPHRD_LARP) { /*Not a LARP packet*/
 	if (print_debugs)
 	   printf("ARP htype is not LARP\n");
@@ -49,5 +50,9 @@ int check_larp_pkt(struct arphdr *ar_hdr)
 	   printf("ARP OP: Not a LARP request packet\n");
 	return 1;
    }
+   u32fromu8(ar_hdr->ar_sip, &src_ip32);
+   u32fromu8(ar_hdr->ar_tip, &dst_ip32);
+   if (src_ip32 == dst_ip32)
+	return 1;
    return 0;
 }

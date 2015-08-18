@@ -144,7 +144,11 @@ void *mpls_data_recv (void *sockfd)
     }
    if (hex_dump_flag)
        hexDump(MPLS_DATA, recvbuf, pkt_len); 
-    process_mpls_data(recvbuf, &send_addr);
+   /*Check if received packet size is greater than ETH_FRAME_LEN and set pkt_len accrodingly - short term, process only max of ETH_FRAME_LEN. Long term goal is to allocate enough buffer for receiving packet */
+   if (pkt_len > ETH_FRAME_LEN)
+	pkt_len = ETH_FRAME_LEN;
+    /*Parse received data packet*/
+    process_mpls_data(recvbuf, &send_addr, pkt_len);
     free(recvbuf);
     pthread_exit(NULL);
 }
