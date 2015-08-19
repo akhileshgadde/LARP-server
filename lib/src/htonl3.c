@@ -15,8 +15,10 @@ void htonl3(uint32_t label, struct label_stack *l_stack)
   	l_stack->entropy   = 0;
   
   l_stack->dummy     = 0; /* 6,7,8th bits not considered. Taken as dummy */
+  #if 0
   if(print_debugs)
 	  print_label_bytes(label, l_stack); 
+  #endif
 }
 
 void print_label_bytes(uint32_t label, struct label_stack *l_stack)

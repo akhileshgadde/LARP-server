@@ -107,7 +107,7 @@ void *larp_req_recv (void *sockfd)
 	pthread_exit(NULL);
     } 
     #endif
-    if (print_debugs)
+    if (print_msgs)
     { 
        printf("LARP Req: Received %zd bytes ", pkt_len);
        printf("from interface index: %d\n", send_addr.sll_ifindex);
@@ -140,7 +140,7 @@ void *mpls_data_recv (void *sockfd)
         perror("Recvfrom Error:Empty packet\n"); 
         pthread_exit(NULL);                                                    
     }
-    if (print_debugs)
+    if (print_msgs)
     {
        printf("MPLS data packet: Received %zd bytes from interface index: %d\n", pkt_len, send_addr.sll_ifindex);
     }

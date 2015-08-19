@@ -26,27 +26,27 @@ int check_larp_pkt(struct arphdr *ar_hdr)
 {
    uint32_t src_ip32, dst_ip32;
    if (ntohs(ar_hdr->ar_htype) != ARPHRD_LARP) { /*Not a LARP packet*/
-	if (print_debugs)
+	if (print_msgs)
 	   printf("ARP htype is not LARP\n");
 	return 1;
    }
    if ((ntohs(ar_hdr->ar_ptype) != ETH_P_IP) && (ntohs(ar_hdr->ar_ptype) != ETH_P_IPV6)) { /*Not an IP packet */
-	if (print_debugs)
+	if (print_msgs)
 	   printf("ARP protocol type is not IPV4/IPV6\n");
 	return 1;
    }
    if(ar_hdr->ar_hln != ETH_ALEN) { /*Incorrect hardware length*/
-	if (print_debugs)
+	if (print_msgs)
 	   printf("Incorrect ARP hardware address length\n");
 	return 1;
    }
    if((ar_hdr->ar_pln != IP_ADDR_SIZE) && (ar_hdr->ar_pln != IPV6_ADDR_SIZE)) { /*4 for Ipv4 and 16 for IPV6*/
-	if (print_debugs)
+	if (print_msgs)
 	   printf("Incorrect protocol address length\n");
 	return 1;
    }
    if(ntohs(ar_hdr->ar_op) != 1) { /*1 for LARP req, 2 for reply and 10 for ARP_NAK*/
-	if (print_debugs)
+	if (print_msgs)
 	   printf("ARP OP: Not a LARP request packet\n");
 	return 1;
    }
