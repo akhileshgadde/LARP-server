@@ -101,10 +101,12 @@ void *larp_req_recv (void *sockfd)
 	perror("Recvfrom Error: Empty packet\n");
         pthread_exit(NULL);
     }
+    #if 0 
     if (pkt_len != ARP_REQ_SIZE) { /* Checking ARP request size */
 	perror("Recceived ARP request size is invalid. Ignoring..\n");
 	pthread_exit(NULL);
     } 
+    #endif
     if (print_debugs)
     { 
        printf("LARP Req: Received %zd bytes ", pkt_len);

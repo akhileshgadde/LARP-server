@@ -11,12 +11,14 @@ int process_mpls_data (void *buff, struct sockaddr_ll *addr, int pkt_len)
   uint32_t *mpls_label = (uint32_t *) calloc (0, label_count * sizeof(uint32_t));
   uint32_t *label_cache = (uint32_t *) calloc (0, label_count * sizeof(uint32_t));
   int i = 0;
+  #if 0
   printf("Inside process_mpls_data\n");
   hexDump(MPLS_DATA, buff, pkt_len); 
+  #endif
   /* add code for repeated parsing of labels */
   while (bos == 0) /*label_count reached or bottom of stack flag set */
   {
-     mpls_hdr = (mpls_t *) buff + offset;
+     mpls_hdr = (mpls_t *) (buff + offset);
      mpls_label[i] = mpls_hdr->label;
      bos = mpls_hdr->stack;
      offset += MPLS_HDR_SIZE; 
