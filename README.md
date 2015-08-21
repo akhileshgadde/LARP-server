@@ -2,11 +2,16 @@
 Implementation of Labelled ARP protocol server application in userspace using Linux PF_PACKET SOCK_DGRAM and SOCK_RAW sockets.
 
 Usage:
+------
+
 $ make clean
+
 $ make all
 
 $ ./server [-n] [-p] [-d] [-h] [-a] [-m num] [-l num] [-r min,max] [-e 1/0]	
+
                                           OR 
+
 $ ./server [--no_check] [--print_msgs] [--print_debugs] [--print_hex_dump] [--attr_tlv] [--attr_metric num] [--label_count num] [--label_range min,max] [--entropy_flag 1/0]
 
 The server application can be run using the below options:
