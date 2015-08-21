@@ -1,9 +1,8 @@
 # LARP-server
 Implementation of Labelled ARP protocol server application in userspace using Linux PF_PACKET SOCK_DGRAM and SOCK_RAW sockets.
 
-Usage: 
+Usage:
 $ make clean
-
 $ make all
 
 $ ./server [-n] [-p] [-d] [-h] [-a] [-m num] [-l num] [-r min,max] [-e 1/0]	
